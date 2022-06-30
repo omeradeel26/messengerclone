@@ -10,8 +10,6 @@ import SearchBarNav from "./SearchBarNav";
 
 const Container = styled("div")({
   height: "13%",
-  padding: "10px",
-  paddingTop: '7px',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between'
@@ -44,11 +42,11 @@ const Buttons = () => {
   return (
     <ButtonContainer>
 
-      <IconButton>
+      <IconButton sx={{transform: 'scale(0.9)'}}>
         <VideoCallIcon sx={{color: 'black'}}/>
       </IconButton>
 
-      <IconButton>
+      <IconButton sx={{transform: 'scale(0.9)'}}>
         <BorderColor sx={{color: 'black'}} />
       </IconButton>
 
