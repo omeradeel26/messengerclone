@@ -1,7 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
+import Landing from "./pages/Landing"
+import Signup from "./pages/Signup"
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+import {DataContextProvider} from './context/DataContext'
 
 const THEME = createTheme({
   typography: {
@@ -16,14 +20,15 @@ const THEME = createTheme({
 function App() {
   return (
     <ThemeProvider theme={THEME}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Dashboard />}>
-            <Route index element={<Dashboard />} />
-            <Route path= "/signup" element={<h1>Hello</h1>} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <DataContextProvider>
+        <BrowserRouter>
+          <Routes>
+             <Route path="/" element={<Dashboard />} />
+             <Route path="/landing" element={<Landing />} />
+             <Route path= "/signup" element={<Signup />} />
+          </Routes>
+        </BrowserRouter>
+      </DataContextProvider>
     </ThemeProvider>
   );
 }

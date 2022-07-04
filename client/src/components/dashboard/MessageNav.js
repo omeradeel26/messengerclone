@@ -59,7 +59,7 @@ export default function MessageNav() {
     <Container>
       <IconContainer>
         <ImageContainer>
-          <ProfilePic imageSrc={imageSrc} />
+          <ProfilePic imageSrc={imageSrc} width="30px" height="30px"/>
         </ImageContainer>
         <Title>Chats</Title>
         <Buttons/>

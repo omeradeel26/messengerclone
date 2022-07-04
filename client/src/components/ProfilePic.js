@@ -1,7 +1,7 @@
 
 
 
-export default function ProfilePicture({ imageSrc }){
+export default function ProfilePicture({ imageSrc, width, height}){
     return (
         <img
           src={imageSrc}
@@ -9,8 +9,8 @@ export default function ProfilePicture({ imageSrc }){
           style={{
             borderRadius: "1000px",
           }}
-          width="30px"
-          height="30px"
+          width={width}
+          height={height}
         />
     );
   };

@@ -4,10 +4,13 @@ import MessageNav from '../components/dashboard/MessageNav'
 import Message from '../components/dashboard/Message'
 import imageSrc from '../logo192.png'
 
+import {useData} from '../context/DataContext'
+
 const PageContainer = styled('div')({
     width: '100vw',
     height: '100vh',
-    display: 'flex'
+    display: 'flex',
+    overflow: 'hidden'
 })
 
 const MenuContainer = styled('div')({
@@ -29,12 +32,14 @@ const DMContainer = styled('div')({
 })
 
 export default function Dashboard(){
+    const {data} = useData()
+    
     return (
         <PageContainer>
             <MenuContainer>
                 <MessageNav/>
                 <DMContainer>
-                    <Message imageSrc={imageSrc}/>
+                    <Message imageSrc={imageSrc} name={data.name} message={data.message}/>
                 </DMContainer>
             </MenuContainer>
             <MessageContainer>
