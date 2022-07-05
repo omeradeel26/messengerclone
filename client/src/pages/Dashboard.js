@@ -31,15 +31,12 @@ const DMContainer = styled('div')({
     alignItems: 'center'
 })
 
-export default function Dashboard(){
-    const {data} = useData()
-    
+export default function Dashboard(){    
     return (
         <PageContainer>
             <MenuContainer>
                 <MessageNav/>
                 <DMContainer>
-                    <Message imageSrc={imageSrc} name={data.name} message={data.message}/>
                 </DMContainer>
             </MenuContainer>
             <MessageContainer>

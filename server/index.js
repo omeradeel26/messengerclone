@@ -7,15 +7,14 @@ const app = express();
 const mongoose = require('mongoose')
 
 //Routes 
-const messageRoute = require('./routes/messages')
-
+const signupRoute = require('./routes/signup')
 
 //Middleware
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
 //route connections
-app.use('/messages', messageRoute)
+app.use('/signup', signupRoute)
 
 //connect to DB and run express server
 mongoose
@@ -25,4 +24,3 @@ mongoose
         console.log(`Server listening on ${PORT}`);
       });
     })
-

@@ -1,6 +1,7 @@
 import { styled } from "@mui/material";
 import  { Link } from 'react-router-dom'
 import Logo from '../../media/landing/logo.png'
+import {useData} from '../../context/DataContext'
 
 const SignUpContainer = styled("div")({
   height: "500px",
@@ -61,6 +62,25 @@ const SignUp = styled('button')({
 })
 
 export default function SignUpForm() {
+  
+  const {createUser} = useData()
+
+  const submitForm = (event) => {
+    event.preventDefault()
+    let name, password, confirmPassword 
+
+    name = document.getElementById("name").value
+    password = document.getElementById("password").value
+    confirmPassword = document.getElementById("confirmPassword").value
+
+    if (password == confirmPassword){
+      createUser(name, password)
+    } else {
+      alert("Password is not confirmed! ")
+    }
+
+  }
+
   return (
     <SignUpContainer>
       <Title>Create an Messenger Account</Title>
@@ -69,14 +89,14 @@ export default function SignUpForm() {
       </SubTitle>
       <img src={Logo} width="65px" height="65px" />
 
-      <form action="/signup" method="POST" style={FormStyle}>
-        <label>Email</label>
-        <Input type="text" name="email" />
+      <form style={FormStyle}>
+        <label>Username</label>
+        <Input id="name" type="text" />
         <label>Password</label>
-        <Input type="password" name="password" />
+        <Input id="password" type="password" />
         <label>Confirm Password</label>
-        <Input type="password" name="confirmPassword" />
-        <SignUp>Sign Up</SignUp>
+        <Input id="confirmPassword" type="password" />
+        <SignUp type="submit" onClick={submitForm}>Sign Up</SignUp>
       </form>
     </SignUpContainer>
   );
