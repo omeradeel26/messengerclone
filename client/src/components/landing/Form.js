@@ -1,6 +1,8 @@
 import { styled } from "@mui/material";
 import  { Link } from 'react-router-dom'
 
+import { useData } from "../../context/DataContext";
+
 const FormContainer = styled("div")({
   width: "50%",
   height: '100%',
@@ -78,18 +80,28 @@ const SignUpLink = () => {
     )
 }
 
-
 export default function Form() {
+
+  const {verifyUser} = useData()
+
+  const submitForm = (event) => {
+    event.preventDefault()
+    let name = document.getElementById("name").value
+    let password = document.getElementById("password").value
+    console.log('submitted')
+    verifyUser(name, password)
+  }
+
   return (
     <FormContainer>
       <Title>Hang out <br/> anytime,<br/> anywhere</Title>
       <SubTitle>Messenger makes it easy and fun to stay close to your favorite people.</SubTitle>
      
-      <form action="/login" method="POST" style={FormStyle} >
-        <Input type="text" placeholder="Email" name="email" />
-        <Input type="password" placeholder="Password" name="password"/>
+      <form style={FormStyle} >
+        <Input type="text" placeholder="Username" id="name" />
+        <Input type="password" placeholder="Password" id="password"/>
         <ButtonContainer>
-            <LoginButton type="submit">Log in</LoginButton>
+            <LoginButton type="submit" onClick={submitForm}>Log in</LoginButton>
             <SignUpLink/>
         </ButtonContainer>
       </form>
