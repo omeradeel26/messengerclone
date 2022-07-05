@@ -1,21 +1,28 @@
+//constants/dependencies
+require('dotenv/config')
 const express = require("express");
 const bodyParser = require("body-parser")
-
 const PORT = process.env.PORT || 3001;
-
 const app = express();
+const mongoose = require('mongoose')
 
+//Routes 
+const messageRoute = require('./routes/messages')
+
+
+//Middleware
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
-app.get("/home", (req, res) => {
-    res.json({ name: 'Omer Adeel', message: 'Omer missed your video chat.' });
-});
+//route connections
+app.use('/messages', messageRoute)
 
-app.post("/login", (req, res) => {
-    const {email, password} = req.body 
-})
+//connect to DB and run express server
+mongoose
+    .connect(process.env.DB_CONNECTION, {useNewUrlParser: true})
+    .then(() =>{
+      app.listen(PORT, () => {
+        console.log(`Server listening on ${PORT}`);
+      });
+    })
 
-app.listen(PORT, () => {
-  console.log(`Server listening on ${PORT}`);
-});
