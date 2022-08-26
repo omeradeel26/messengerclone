@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const {MessageSchema} = require('./Messages')
 
 const schema = mongoose.Schema({
     name: {
@@ -8,6 +9,10 @@ const schema = mongoose.Schema({
     password: {
         type: String, 
         required: true
+    },
+    messages: {
+        type: [MessageSchema],
+        required: false
     }
 })
 
