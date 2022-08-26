@@ -1,8 +1,10 @@
 import { styled, IconButton } from "@mui/material";
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import { BorderColor } from "@mui/icons-material";
-
+import { useData } from "../../context/DataContext";
+import {useState} from 'react'
 import imageSrc from "../../../src/logo192.png";
+import Message from './Message'
 
 import ProfilePic from "../ProfilePic";
 import SearchBarNav from "./SearchBarNav";
@@ -55,6 +57,15 @@ const Buttons = () => {
 };
 
 export default function MessageNav() {
+  const { getUser, getUsers } = useData();
+
+  const [messages, setMessages] = useState([])
+
+  const searchMessages =  (event) => {
+    const users = getUsers(event.target.value)
+    setMessages(users)
+  };
+
   return (
     <Container>
       <IconContainer>
@@ -63,8 +74,13 @@ export default function MessageNav() {
         </ImageContainer>
         <Title>Chats</Title>
         <Buttons/>
+        {messages.map((message)=> {
+          return (
+            <Message name={message.name} imageSrc={imageSrc} message='hello' />
+          )
+        })}
       </IconContainer>
-      <SearchBarNav/>
+      <SearchBarNav searchMessages={searchMessages}/>
     </Container>
   );
 }

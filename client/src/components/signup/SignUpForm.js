@@ -1,7 +1,7 @@
 import { styled } from "@mui/material";
-import  { Link } from 'react-router-dom'
-import Logo from '../../media/landing/logo.png'
-import {useData} from '../../context/DataContext'
+import { Link } from "react-router-dom";
+import Logo from "../../media/landing/logo.png";
+import { useData } from "../../context/DataContext";
 
 const SignUpContainer = styled("div")({
   height: "500px",
@@ -27,7 +27,7 @@ const SubTitle = styled("p")({
   width: "330px",
   textAlign: "center",
   marginTop: 0,
-  marginBottom: '25px'
+  marginBottom: "25px",
 });
 
 const Input = styled("input")({
@@ -37,49 +37,47 @@ const Input = styled("input")({
   backgroundColor: "#F3F3F5",
   color: "light grey",
   border: "0px",
-  marginTop: '8px',
-  marginBottom: '15px'
+  marginTop: "8px",
+  marginBottom: "15px",
 });
 
 const FormStyle = {
   display: "flex",
   flexDirection: "column",
   height: "300px",
-  marginTop: '22px'
+  marginTop: "22px",
 };
 
-const SignUp = styled('button')({
-  width: '100%',
-  padding: '8px',
-  backgroundColor: '#0a7cff',
-  borderRadius: '8px',
-  color: 'white',
-  fontFamily: 'Gantari, sans-serif',
-  fontSize: '17px',
-  border: '0px',
-  '&:hover': {cursor: 'pointer'},
-  marginTop: '10px'
-})
+const SignUp = styled("button")({
+  width: "100%",
+  padding: "8px",
+  backgroundColor: "#0a7cff",
+  borderRadius: "8px",
+  color: "white",
+  fontFamily: "Gantari, sans-serif",
+  fontSize: "17px",
+  border: "0px",
+  "&:hover": { cursor: "pointer" },
+  marginTop: "10px",
+});
 
 export default function SignUpForm() {
-  
-  const {createUser} = useData()
+  const { signUp } = useData();
 
   const submitForm = (event) => {
-    event.preventDefault()
-    let name, password, confirmPassword 
+    event.preventDefault();
+    let name, password, confirmPassword;
 
-    name = document.getElementById("name").value
-    password = document.getElementById("password").value
-    confirmPassword = document.getElementById("confirmPassword").value
+    name = document.getElementById("name").value;
+    password = document.getElementById("password").value;
+    confirmPassword = document.getElementById("confirmPassword").value;
 
-    if (password == confirmPassword){
-      createUser(name, password)
+    if (password == confirmPassword) {
+      signUp(name, password);
     } else {
-      alert("Password is not confirmed! ")
+      alert("Password is not confirmed! ");
     }
-
-  }
+  };
 
   return (
     <SignUpContainer>
@@ -96,7 +94,9 @@ export default function SignUpForm() {
         <Input id="password" type="password" />
         <label>Confirm Password</label>
         <Input id="confirmPassword" type="password" />
-        <SignUp type="submit" onClick={submitForm}>Sign Up</SignUp>
+        <SignUp type="submit" onClick={submitForm}>
+          Sign Up
+        </SignUp>
       </form>
     </SignUpContainer>
   );
