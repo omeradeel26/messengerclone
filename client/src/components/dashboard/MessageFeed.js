@@ -105,9 +105,18 @@ function MessageFeed() {
         <>
           <Banner name={currentConvo.recipient} picture={imageSrc} />
           <MessageContainer id="messageContainer">
-            {currentConvo.messages.map((msg) => {
+            {currentConvo.messages.map((msg, index) => {
+              let isChanged = false;
+
+              if (index != 0){
+                if (currentConvo.messages[index-1].author !== msg.author){
+                  isChanged = true;
+                }
+              } else if (index == 0){
+                isChanged = true;
+              }
               return (
-                <Message author={msg.author} text={msg.text} date={msg.date} />
+                <Message author={msg.author} text={msg.text} date={msg.date} display={isChanged}/>
               );
             })}
           </MessageContainer>

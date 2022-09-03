@@ -18,30 +18,30 @@ export function DataContextProvider({ children }) {
   const navigate = useNavigate();
   const socket = io.connect(ENDPOINT);
 
-  // useEffect(() => {
-  //   const listener = async (data) => {
-  //     if (data.recipient === user.name) {
-  //       const newUser = await makeGetRequest("/user/search", {
-  //         userName: user.name,
-  //       });
+  useEffect(() => {
+    const listener = async (data) => {
+      if (data.recipient === user.name) {
+        const newUser = await makeGetRequest("/user/search", {
+          userName: user.name,
+        });
 
-  //       setUser(newUser);
+        setUser(newUser);
 
-  //       const convo = await makeGetRequest("/messages/getConvo", {
-  //         recipient: data.sender,
-  //         userId: user._id,
-  //       });
+        const convo = await makeGetRequest("/messages/getConvo", {
+          recipient: data.sender,
+          userId: user._id,
+        });
 
-  //       setCurrentConvo(convo);
-  //     }
-  //   };
+        setCurrentConvo(convo);
+      }
+    };
 
-  //   socket.on("receiveMessage", listener);
+    socket.on("receiveMessage", listener);
 
-  //   return () => {
-  //     socket.off("receiveMessage", listener);
-  //   };
-  // }, [user]);
+    return () => {
+      socket.off("receiveMessage", listener);
+    };
+  }, [user]);
 
   //helper methods
   const getUser = () => {
@@ -76,7 +76,7 @@ export function DataContextProvider({ children }) {
 
   const signUp = async (name, password) => {
     try {
-      const user = await makePostRequest("/user/signIn", {
+      const user = await makePostRequest("/user/signUp", {
         name: name,
         password: password,
       });
@@ -147,10 +147,10 @@ export function DataContextProvider({ children }) {
     setUser(sender);
     setCurrentConvo(convo);
 
-    // socket.emit("sendMessage", {
-    //   recipient: currentConvo.recipient,
-    //   sender: user.name,
-    // });
+    socket.emit("sendMessage", {
+      recipient: currentConvo.recipient,
+      sender: user.name,
+    });
   };
 
   const selectConvo = async (recipient) => {

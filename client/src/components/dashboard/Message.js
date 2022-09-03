@@ -1,7 +1,7 @@
 import { styled } from "@mui/material";
 import { useData } from "../../context/DataContext";
 
-function Message({ text, author, date }) {
+function Message({ text, author, date, display }) {
   const { getUser } = useData();
   const user = getUser();
 
@@ -19,12 +19,22 @@ function Message({ text, author, date }) {
       color: user.name == author ? "white" : "black",
       fontFamily: "Calibri",
     },
+    author: {
+      fontFamily: "Calibri",
+      margin: "1px 5px",
+      fontSize: "14px",
+      fontWeight: 500
+    },
   };
 
   return (
-    <div style={styles.container} title={date}>
-      {author !== user.name ? author : ""}
-      <div style={styles.messageContainer}>{text}</div>
+    <div style={styles.container}>
+      {author !== user.name && display && (
+        <h5 style={styles.author}>
+          {author}
+        </h5>
+      )}
+      <div title={date} style={styles.messageContainer}>{text}</div>
     </div>
   );
 }
