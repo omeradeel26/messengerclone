@@ -1,94 +1,190 @@
-import { useState, useEffect, useContext, createContext } from "react";
+import {
+  useState,
+  useContext,
+  createContext,
+  useEffect,
+} from "react";
 import { useNavigate } from "react-router-dom";
-import 'whatwg-fetch';
-import openSocket from 'socket.io-client';
+import { makeGetRequest, makePostRequest } from "./httpRequests";
+import io from "socket.io-client";
 
-const socket = openSocket('http://localhost:8000');
+const ENDPOINT = "http://localhost:3001";
 const DataContext = createContext({});
 
 export function DataContextProvider({ children }) {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
+  const [currentConvo, setCurrentConvo] = useState(null);
+  const [searchedUser, setSearchedUser] = useState(null);
   const navigate = useNavigate();
+  const socket = io.connect(ENDPOINT);
 
-  //make POST requests -> do get requests seperately
-  const POST = async function (url, data) {
-    return await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-  };
+  // useEffect(() => {
+  //   const listener = async (data) => {
+  //     if (data.recipient === user.name) {
+  //       const newUser = await makeGetRequest("/user/search", {
+  //         userName: user.name,
+  //       });
 
-  const sendSocketIO = () => {
-    socket.emit('example_message', 'demo');
-  }
+  //       setUser(newUser);
+
+  //       const convo = await makeGetRequest("/messages/getConvo", {
+  //         recipient: data.sender,
+  //         userId: user._id,
+  //       });
+
+  //       setCurrentConvo(convo);
+  //     }
+  //   };
+
+  //   socket.on("receiveMessage", listener);
+
+  //   return () => {
+  //     socket.off("receiveMessage", listener);
+  //   };
+  // }, [user]);
 
   //helper methods
   const getUser = () => {
     return user;
   };
 
+  const getCurrentConvo = () => {
+    return currentConvo;
+  };
+
+  const getSearchedUser = () => {
+    return searchedUser;
+  };
+
   const signIn = async (name, password) => {
     try {
-      POST("/users/signIn", { name: name, password: password })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data) {
-            setUser(data);
-            navigate("/");
-          } else {
-            alert("Username or password is incorrect.");
-          }
-        });
+      const user = await makeGetRequest("/user/signIn", {
+        name: name,
+        password: password,
+      });
+
+      if (user) {
+        setUser(user);
+        navigate("/dashboard");
+      } else {
+        alert("Username or password is incorrect.");
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const signUp = (name, password) => {
+  const signUp = async (name, password) => {
     try {
-      POST("/users/signUp", { name: name, password: password })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-          if (data) {
-            setUser({ name: name, password: password, messages: [] });
-            navigate("/");
-          } else {
-            alert("User already exists.");
-          }
-        });
+      const user = await makePostRequest("/user/signIn", {
+        name: name,
+        password: password,
+      });
+
+      if (user) {
+        setUser(user);
+        navigate("/dashboard");
+      } else {
+        alert("User already exists.");
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const getUsers = async (userName) => {
-    return new Promise((reject, resolve) => {
-      const newUsers = [];
-      fetch("/users/all")
-        .then((response) => response.json())
-        .then((users) => {
-          if (userName !== "") {
-            const newUsers = [];
-            users.forEach((user) => {
-              if (user.name.slice(0, userName.length) === userName) {
-                newUsers.push(user);
-              }
-            });
-            resolve(newUsers);
-          } else {
-            resolve(users);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+  const searchUsers = async (userName) => {
+    if (userName == user.name) {
+      return;
+    }
+
+    const newUser = await makeGetRequest("./user/search", {
+      userName: userName,
     });
+    if (newUser) {
+      setSearchedUser(newUser);
+      selectConvo(newUser.name);
+    } else {
+      alert("User not found.");
+      setSearchedUser(null);
+    }
+  };
+
+  const viewConvos = () => {
+    setSearchedUser(null);
+  };
+
+  const createConvo = async (recipient) => {
+    await makePostRequest("/messages/createConvo", {
+      recipientName: recipient,
+      userId: user._id,
+    });
+
+    setSearchedUser(null);
+  };
+
+  const sendMessage = async (message) => {
+    if (message == "") {
+      return;
+    }
+
+    const date = new Date();
+    const msg = {
+      author: user.name,
+      text: message,
+      date: date.toLocaleString(),
+    };
+
+    if ("isTemp" in currentConvo) {
+      createConvo(currentConvo.recipient);
+    }
+
+    const { convo, sender } = await makePostRequest("/messages/sendMessage", {
+      recipientName: currentConvo.recipient,
+      userId: user._id,
+      message: msg,
+    });
+
+    setUser(sender);
+    setCurrentConvo(convo);
+
+    // socket.emit("sendMessage", {
+    //   recipient: currentConvo.recipient,
+    //   sender: user.name,
+    // });
+  };
+
+  const selectConvo = async (recipient) => {
+    const convo = await makeGetRequest("/messages/getConvo", {
+      recipient: recipient,
+      userId: user._id,
+    });
+
+    if (convo) {
+      setCurrentConvo(convo);
+    } else {
+      let tempConvo = {
+        recipient: recipient,
+        messages: [],
+        isTemp: true,
+      };
+      setCurrentConvo(tempConvo);
+    }
   };
 
   return (
-    <DataContext.Provider value={{ getUser, signIn, signUp, getUsers }}>
+    <DataContext.Provider
+      value={{
+        getUser,
+        getCurrentConvo,
+        getSearchedUser,
+        viewConvos,
+        selectConvo,
+        sendMessage,
+        searchUsers,
+        signIn,
+        signUp,
+      }}
+    >
       {children}
     </DataContext.Provider>
   );

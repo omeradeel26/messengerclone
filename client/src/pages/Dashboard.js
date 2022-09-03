@@ -1,16 +1,14 @@
 import { styled } from '@mui/material'
-
-import MessageNav from '../components/dashboard/MessageNav'
-import Message from '../components/dashboard/Message'
-import imageSrc from '../logo192.png'
-
-import {useData} from '../context/DataContext'
+import ConversationFeed from '../components/dashboard/ConversationFeed'
+import MessageFeed from '../components/dashboard/MessageFeed'
+import RouterProtection from '../components/RouterProtection'
 
 const PageContainer = styled('div')({
     width: '100vw',
     height: '100vh',
     display: 'flex',
-    overflow: 'hidden'
+    overflowX: 'hidden',
+    overflowY: 'hidden'
 })
 
 const MenuContainer = styled('div')({
@@ -25,22 +23,17 @@ const MessageContainer = styled('div')({
     height: '100%',
 })
 
-const DMContainer = styled('div')({
-    flexDirection: 'column',
-    display: 'flex',
-    alignItems: 'center'
-})
-
-export default function Dashboard(){    
+export default function Dashboard(){       
     return (
-        <PageContainer>
-            <MenuContainer>
-                <MessageNav/>
-                <DMContainer>
-                </DMContainer>
-            </MenuContainer>
-            <MessageContainer>
-            </MessageContainer>
-        </PageContainer>
+        <RouterProtection>
+            <PageContainer>
+                <MenuContainer>
+                    <ConversationFeed />
+                </MenuContainer>
+                <MessageContainer>
+                    <MessageFeed/>
+                </MessageContainer>
+            </PageContainer>
+        </RouterProtection>
     )
 }

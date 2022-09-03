@@ -1,40 +1,55 @@
 //constants/dependencies
-require('dotenv/config')
+require("dotenv/config");
 const express = require("express");
-const bodyParser = require("body-parser")
-const PORT = process.env.PORT || 3001;
 const app = express();
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 
-//Routes 
-const userRoute = require('./routes/users')
+const PORT = process.env.PORT || 3001;
 
-//Middleware
-app.use(bodyParser.urlencoded({extended: false}))
-app.use(bodyParser.json())
+const http = require("http");
+const cors = require("cors");
+const { Server } = require("socket.io");
 
-// Socket.io
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
-io.on('connection', function(socket){
-  console.log('a user connected');
-  socket.on('disconnect', function(){
-    console.log('User Disconnected');
-  });
-  socket.on('example_message', function(msg){
-    console.log('message: ' + msg);
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    credentials: true,
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+    transports: ["websocket", "polling"],
+  },
+});
+
+//socket handling
+io.on("connection", (socket) => {
+  console.log(`User Connected: ${socket.id}`);
+
+  socket.on("sendMessage", (data) => {
+    console.log(data)
+    socket.broadcast.emit("receiveMessage", data);
   });
 });
-io.listen(8000);
+
+//Routes
+const userRoute = require("./routes/user");
+const messagesRoute = require("./routes/messages");
+
+//Middleware
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 //route connections
-app.use('/users', userRoute)
+app.use("/user", userRoute);
+app.use("/messages", messagesRoute);
 
 //connect to DB and run express server
 mongoose
-    .connect(process.env.DB_CONNECTION, {useNewUrlParser: true})
-    .then(() =>{
-      app.listen(PORT, () => {
-        console.log(`Server listening on ${PORT}`);
-      });
-    })
+  .connect(process.env.DB_CONNECTION, { useNewUrlParser: true })
+  .then(() => {
+    server.listen(PORT, () => {
+      console.log(`Server listening on ${PORT}`);
+    });
+  });

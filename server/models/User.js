@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const {MessageSchema} = require('./Messages')
+const { ConversationSchema } = require('./Conversation')
 
 const schema = mongoose.Schema({
     name: {
@@ -10,9 +10,9 @@ const schema = mongoose.Schema({
         type: String, 
         required: true
     },
-    messages: {
-        type: [MessageSchema],
-        required: false
+    conversations: {
+        type: [ConversationSchema],
+        required: true
     }
 })
 

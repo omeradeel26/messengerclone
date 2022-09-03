@@ -23,8 +23,8 @@ function App() {
       <BrowserRouter>
         <DataContextProvider>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/landing" element={<Landing />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/" element={<Landing />} />
             <Route path="/signup" element={<Signup />} />
           </Routes>
         </DataContextProvider>

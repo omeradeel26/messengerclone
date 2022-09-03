@@ -1,56 +1,32 @@
-import { styled} from "@mui/material";
-import ProfilePic from '../ProfilePic'
+import { styled } from "@mui/material";
+import { useData } from "../../context/DataContext";
 
+function Message({ text, author, date }) {
+  const { getUser } = useData();
+  const user = getUser();
 
-const MessageContainer = styled('div')({
-    width: '95%',
-    height: '55px',
-    borderRadius: '10px',
-    backgroundColor: 'white',
-    transition: '0.2s ease-in-out',
-    padding: '6px',
-    display: 'flex',
-    alignItems: 'center',
-    '&:hover': {
-        backgroundColor: "#F5F5F5",      
-        cursor: 'pointer'          
+  const styles = {
+    container: {
+      marginBottom: "10px",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: user.name == author ? "flex-end" : "flex-start",
     },
-    marginTop: '13px'
-})
+    messageContainer: {
+      borderRadius: "13px",
+      padding: "6px 10px",
+      backgroundColor: user.name == author ? "#0084FF" : "#E4E6EB",
+      color: user.name == author ? "white" : "black",
+      fontFamily: "Calibri",
+    },
+  };
 
-const TextContainer = styled('div')({
-    width: '80%',
-    marginLeft: '22px',
-    height: '100%',
-    flexDirection: 'column',
-    justifyContent: 'space-between'
-})
-
-const Title = styled('h3')({
-    fontWeight: 400,
-    display: 'block',
-    margin: 0,
-    fontSize: '16px',
-    marginTop: '5px',
-    marginBottom: '7px'
-})
-
-const SubTitle =styled('p')({
-    fontWeight: 400,
-    display: 'block',
-    margin: 0,
-    fontSize: '12px'
-})
-
-
-export default function Message({imageSrc, name, message}){
-    return (
-        <MessageContainer>
-            <ProfilePic imageSrc={imageSrc} width="40px" height="40px"/>
-            <TextContainer>
-                <Title>{name}</Title>
-                <SubTitle>{message}</SubTitle>
-            </TextContainer>
-        </MessageContainer>
-    )
+  return (
+    <div style={styles.container} title={date}>
+      {author !== user.name ? author : ""}
+      <div style={styles.messageContainer}>{text}</div>
+    </div>
+  );
 }
+
+export default Message;
