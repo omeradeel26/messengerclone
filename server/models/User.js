@@ -14,6 +14,7 @@ const schema = mongoose.Schema({
         type: [ConversationSchema],
         required: true
     }
-})
+}, 
+{timestamps: true})
 
 module.exports = mongoose.model('User', schema)
